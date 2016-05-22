@@ -53,7 +53,7 @@ def sendSMS(message):
     print(message.sid)
 sendSMS.client = False
 
-def notify_command():
+def main():
     notifications = getNotifications()
 
     if len(notifications) <= 0:
@@ -69,5 +69,4 @@ def notify_command():
     clearNotifications(limit)
 
 if __name__ == '__main__':
-    import scriptine
-    scriptine.run()
+    main()
