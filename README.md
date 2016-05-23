@@ -6,8 +6,9 @@ Screeps scripts.
 
 ## Requirements
 
-This project depends on twilio for sending SMS. You will need an account, which
-will end up costing $1 a month plus an additional $0.0075 per text message.
+This project depends on [Twilio](https://www.twilio.com) for sending SMS. You
+will need an account, which will end up costing $1 a month plus an additional
+$0.0075 per text message.
 
 
 ## Settings
@@ -38,7 +39,7 @@ twilio_token:
 # You SMS number from twilio. https://www.twilio.com/console/phone-numbers/dashboard
 sms_from: '+15555555555'
 
-# This should be your phone number.
+# This should be the number you want to receive the texts.
 sms_to: '+15555555555'
 ```
 

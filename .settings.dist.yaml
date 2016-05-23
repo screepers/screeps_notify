@@ -1,4 +1,3 @@
-
 # Copy this to .settings.yaml and fill it out.
 
 # Screeps account info
@@ -12,6 +11,8 @@ twilio_sid:
 # Your Auth Token from www.twilio.com/console
 twilio_token:
 
-# Consider using your number as the sender and receiver
+# You SMS number from twilio. https://www.twilio.com/console/phone-numbers/dashboard
 sms_from: '+15555555555'
+
+# This should be the number you want to receive the texts.
 sms_to: '+15555555555'
