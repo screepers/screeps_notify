@@ -44,6 +44,30 @@ sms_to: '+15555555555'
 ```
 
 
+## Installation
+
+### vagrant
+
+This service can be enabled on a desktop machine using vagrant. First setup the
+configuration file as per the instruction below, then provision the machine.
+
+```
+vagrant up
+```
+
+
+### Self Hosting
+
+1. Download - `wget $(curl -L -s https://api.github.com/repos/screepers/screeps_notify/releases/latest | grep tarball_url | head -n 1 | cut -d '"' -f 4) -O screepsnotify.tgz`
+2. Unpack - `mkdir screepsnotify; tar zxvf screepsnotify.tgz -C ./screepsnotify --strip 1`.
+3. Move - `sudo mv screepsnotify /opt/screepsnotify`.
+4. Change Directory - `cd /opt/screepsnotify`
+5. OPTIONAL: Install Dependencies `sudo ./provisioning/provision.sh`.
+6. Configure - `cp .screeps_settings.dist.yaml .screeps_settings.yaml` and then edit.
+7. Build - `make`
+8. Install - `sudo make install`
+
+
 ## Running
 
 To run the program simply call notify.py from the directory your local settings
@@ -52,6 +76,7 @@ are in. You may simply wish to add this to a cronjob.
 ```bash
 $ ./screeps_notify/notify.py
 ```
+
 
 ## Sending Notifications from Screeps
 
@@ -78,6 +103,7 @@ in memory. The `Notify` module has a function to clean this up.
 Notify = require('notify.js')
 Notify.clean()
 ```
+
 
 ## Thanks!
 
