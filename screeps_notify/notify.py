@@ -3,8 +3,13 @@
 from screeps import ScreepsConnection
 import sys
 from twilio.rest import TwilioRestClient
+import logging
 import os
 import yaml
+
+base_directory = os.path.expanduser('~')
+if not os.path.exists(base_directory):
+    os.makedirs(base_directory)
 
 
 def getSettings():
@@ -53,20 +58,43 @@ def sendSMS(message):
     print(message.sid)
 sendSMS.client = False
 
-def main():
-    notifications = getNotifications()
 
-    if len(notifications) <= 0:
-        print 'No notifications to send.'
-        sys.exit(0)
+class App():
 
-    limit = 0
-    print 'Sending notifications.'
-    for notification in notifications:
-        if notification['tick'] > limit:
-            limit = notification['tick']
-        sendSMS(notification['message'])
-    clearNotifications(limit)
+    def __init__(self):
+        self.stdin_path = '/dev/null'
+        self.stdout_path = '/dev/null'
+        #self.stdout_path = base_directory + '/screepsnotify.out'
+        self.stderr_path = base_directory + '/screepsnotify.err'
+        self.pidfile_path =  base_directory + '/screepsnotify.pid'
+        self.pidfile_timeout = 5
+
+
+    def run(self):
+        logging.basicConfig(level=logging.WARN)
+        logger = logging.getLogger("ScreepsNotify")
+        logger.setLevel(logging.INFO)
+        formatter = logging.Formatter("%(asctime)s - %(name)s - %(levelname)s - %(message)s")
+        handler = logging.FileHandler(base_directory + "/screepsnotify.log")
+        handler.setFormatter(formatter)
+        logger.addHandler(handler)
+
+        while True:
+            notifications = getNotifications()
+            if len(notifications) <= 0:
+                print 'No notifications to send.'
+                sys.exit(0)
+            limit = 0
+            print 'Sending notifications.'
+            for notification in notifications:
+                if notification['tick'] > limit:
+                    limit = notification['tick']
+                sendSMS(notification['message'])
+            clearNotifications(limit)
+
+            time.sleep(5)
+
 
 if __name__ == '__main__':
-    main()
+    app = App()
+    app.run()
