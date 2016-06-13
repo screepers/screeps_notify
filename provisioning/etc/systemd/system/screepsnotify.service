@@ -1,0 +1,16 @@
+[Unit]
+Description=Screeps SMS Notifications
+After=network-online.target
+
+[Service]
+Type=simple
+User=screepsnotify
+Group=screepsnotify
+WorkingDirectory=/home/screepsnotify/
+ExecStart=/usr/local/bin/screepsnotify
+StandardOutput=syslog
+StandardError=syslog
+Restart=always
+
+[Install]
+WantedBy=multi-user.target
