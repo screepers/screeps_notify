@@ -36,7 +36,7 @@ Notify.queueMessage = function (message) {
     Memory.__notify = []
   }
   Memory.__notify.push({
-    'message': 'Screeps: ' + message,
+    'message': message,
     'tick': Game.time
   })
 }

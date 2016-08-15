@@ -56,7 +56,7 @@ def clearNotifications(tick=0):
 
 
 def sendSMS(notification):
-    message = notification['message']
+    message = 'Screeps: ' + notification['message']
     settings = getSettings()
 
     if 'twilio_sid' not in settings:
