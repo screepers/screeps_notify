@@ -30,6 +30,8 @@ screeps_username:
 screeps_password:
 screeps_ptr: false
 
+## To enable SMS Messages fill out the information below.
+
 # Your Account SID from www.twilio.com/console
 twilio_sid:
 
@@ -41,7 +43,25 @@ sms_from: '+15555555555'
 
 # This should be the number you want to receive the texts.
 sms_to: '+15555555555'
+
+
+## To enable HTTP Messages fill out the information below.
+
+# URL to post to.
+http:
+
+# Username, if required.
+http_user:
+
+# Password, if required.
+http_pass:
+
+# AWS Lambda API Key.
+api-key:
 ```
+
+
+
 
 
 ## Installation
