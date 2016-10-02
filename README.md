@@ -75,6 +75,15 @@ configuration file as per the instruction below, then provision the machine.
 vagrant up
 ```
 
+### docker
+
+1. Clone the repository.
+2. Copy settings file - `cp .screeps_settings.dist.yaml .settings.yaml`
+3. Edit settings with the appropriate API keys.
+4. Build your docker image- `docker build -t screepsnotify .`
+5. Test to make sure it works- `docker run screepsnotify`
+6. Add a cronjob to call `docker run screepsnotify` as often as you wish.
+
 
 ### Self Hosting
 
