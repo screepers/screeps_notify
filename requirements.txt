@@ -4,6 +4,6 @@ pytz==2016.4
 PyYAML>=3.11,<4
 requests>=2.10,<3
 Requires==0.0.3
--e git+https://github.com/tedivm/python-screeps.git@c300073133dcd08d2d5f100a1a006bda60d9ce05#egg=screeps
+-e git+https://github.com/screepers/python-screeps.git@master#egg=screeps
 six==1.10.0
 twilio>=5.4.0,<6
