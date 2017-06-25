@@ -1,4 +1,5 @@
 .vagrant
+aws_lambda*
 
 # Byte-compiled / optimized / DLL files
 __pycache__/

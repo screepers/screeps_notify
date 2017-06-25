@@ -144,6 +144,15 @@ vagrant up
 8. Install - `sudo make install`
 
 
+### AWS Lambda
+
+1. Clone the repository.
+2. Copy settings file - `cp .screeps_settings.dist.yaml .settings.yaml`
+3. Edit settings with the appropriate API keys.
+4. Build the lambda package- `make lambda`
+5. Upload zip to lambda using `notify.lambda_handler` as the handler
+
+
 ## Running
 
 To run the program simply call notify.py from the directory your local settings
