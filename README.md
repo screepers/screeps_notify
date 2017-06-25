@@ -20,48 +20,95 @@ The settings file is a yaml file. Begin by copying the settings.dist file to
 cp .settings.dist.yaml .settings.yaml
 ```
 
-The settings file is in yaml and takes various authentication tokens.
+
+### Screeps Settings
 
 ```yaml
-# Copy this to .settings.yaml and fill it out.
 
 # Screeps account info
 screeps_username:
 screeps_password:
 screeps_ptr: false
-
-## To enable SMS Messages fill out the information below.
-
-# Your Account SID from www.twilio.com/console
-twilio_sid:
-
-# Your Auth Token from www.twilio.com/console
-twilio_token:
-
-# You SMS number from twilio. https://www.twilio.com/console/phone-numbers/dashboard
-sms_from: '+15555555555'
-
-# This should be the number you want to receive the texts.
-sms_to: '+15555555555'
-
-
-## To enable HTTP Messages fill out the information below.
-
-# URL to post to.
-http:
-
-# Username, if required.
-http_user:
-
-# Password, if required.
-http_pass:
-
-# AWS Lambda API Key.
-api-key:
 ```
 
 
+### Define Services
 
+Services are used by the system to send messages. Currently there are three
+service types (HTTP, Slack, and SMS), each of which can be used multiple times
+(for instance, you can define multiple slack hooks to send different types of
+messages to different channels).
+
+```yaml
+services:
+
+  sms:
+    # Set driver to twilio
+    type: sms
+
+    # Your Account SID from www.twilio.com/console
+    twilio_sid:
+
+    # Your Auth Token from www.twilio.com/console
+    twilio_token:
+
+    # You SMS number from twilio. https://www.twilio.com/console/phone-numbers/dashboard
+    sms_from: '+15555555555'
+
+    # This should be the number you want to receive the texts.
+    sms_to: '+15555555555'
+
+  alliance:
+    # Set driver to HTTP
+    type: http
+
+    # Specify a url
+    url: https://example.execute-api.us-east-1.amazonaws.com/prod/service
+
+    # Provide an API key for AWS Gateway (optional)
+    api-key:
+
+  logs:
+    # Set driver to HTTP
+    type: http
+
+    # Specify a url
+    url: https://example.execute-api.us-east-1.amazonaws.com/prod/service
+
+    # Provide an API key for AWS Gateway (optional)
+    api-key:
+
+  slack:
+    # Set driver to SLACK
+    type: slack
+
+    # Specify a url
+    webhook_url:
+```
+
+
+### Define Groups
+
+Groups define which services get used when a notification is sent. At a minimum
+a `default` group should be set.
+
+Groups can either be an array of services or the string `all` (which will make
+sure the group sends a message to all available services).
+
+```yaml
+groups:
+
+  default:
+    - sms
+    - logs
+    - slack
+
+  economy:
+    - sms
+    - logs
+
+  defense: all
+```
 
 
 ## Installation
@@ -120,6 +167,12 @@ Notify('Test Message')
 
 // Will send immediately, but only once every 100 ticks.
 Notify('Rate Limited Message', 100)
+
+// Will send only to the economy group services, and only once every 100 ticks.
+Notify('Rate Limited Group Message', 100, ['economy'])
+
+// Will send immediately but only to the defense group services
+Notify('Rate Limited Group Message', false, ['defense'])
 ```
 
 

@@ -1,5 +1,9 @@
 
-var Notify = function (message, limit) {
+var Notify = function (message, limit=false, groups=false) {
+
+  if(!groups) {
+    groups = ['default']
+  }
 
   // If no limit then send immediately (and potentially repeatedly)
   if(!limit) {
@@ -9,13 +13,15 @@ var Notify = function (message, limit) {
 
   // In cases where there are limits we have to record the history.
 
+  var queue_message = message + '::' + groups.join('_')
+
   if(!Memory.__notify_history) {
     Memory.__notify_history = {}
   }
 
   // If the message was sent in the last LIMIT ticks then don't send again.
-  if(!!Memory.__notify_history[message]) {
-    var lastSent = Memory.__notify_history[message]
+  if(!!Memory.__notify_history[queue_message]) {
+    var lastSent = Memory.__notify_history[queue_message]
     if(lastSent >= Game.time - limit) {
       return
     } else {
@@ -25,18 +31,19 @@ var Notify = function (message, limit) {
   }
 
   // Record message in history and send it.
-  Memory.__notify_history[message] = Game.time
-  Notify.queueMessage(message)
+  Memory.__notify_history[queue_message] = Game.time
+  Notify.queueMessage(message, groups)
   return 0
 }
 
 
-Notify.queueMessage = function (message) {
+Notify.queueMessage = function (message, groups) {
   if(!Memory.__notify) {
     Memory.__notify = []
   }
   Memory.__notify.push({
     'message': message,
+    'groups': groups,
     'tick': Game.time
   })
 }
@@ -59,6 +66,5 @@ Notify.cleanHistory = function (limit) {
     }
   }
 }
-
 
 module.exports = Notify
