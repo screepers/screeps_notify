@@ -2,6 +2,12 @@
 import json
 import services.config as config
 import requests
+import re
+
+
+def addLinks(matchobj):
+    roomname = matchobj.group(1).upper()
+    return '<https://screeps.com/a/#!/room/' + roomname + '|' + roomname + '>'
 
 
 class slack:
@@ -12,12 +18,25 @@ class slack:
     def sendMessage(self, notification):
         print('sending message from slack')
 
-        url = self.settings['webhook_url']
         user = config.settings['screeps_username']
         message = '%s: %s' % (user, notification)
         slack_data = {'text': message}
 
-        r = requests.post(self.settings['webhook_url']
+        if 'channel' in self.settings:
+            slack_data['channel'] = self.settings['channel']
+
+        if 'username' in self.settings:
+            slack_data['username'] = self.settings['username']
+
+        if 'icon_emoji' in self.settings:
+            slack_data['icon_emoji'] = self.settings['icon_emoji']
+
+        notification = re.sub(r'([E|W][\d]+[N|S][\d]+)',
+                              addLinks,
+                              notification,
+                              flags=re.IGNORECASE)
+
+        r = requests.post(self.settings['webhook_url'],
                           data=json.dumps(slack_data),
                           headers={
                             'Content-Type': 'application/json',
