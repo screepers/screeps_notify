@@ -84,6 +84,15 @@ services:
 
     # Specify a url
     webhook_url:
+
+    # Optionally set a channel. If not set the webhook default will be used.
+    channel:
+
+    # Optionally set a username.
+    username:
+
+    # Optionally specify an emoji as a user icon
+    icon_emoji:
 ```
 
 
@@ -145,6 +154,9 @@ vagrant up
 
 
 ### AWS Lambda
+
+Even when run every second the load is more than low enough to qualify for the
+free tier.
 
 1. Clone the repository.
 2. Copy settings file - `cp .screeps_settings.dist.yaml .settings.yaml`
