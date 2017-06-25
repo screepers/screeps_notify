@@ -1,4 +1,4 @@
 declare module "notify" {
-    function Notify(message: string, limit?: number): void;
+    function Notify(message: string, limit?: number, groups?: string[]): void;
     export = Notify;
 }

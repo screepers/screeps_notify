@@ -13,7 +13,6 @@ then
 else
   DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 fi
-cd $DIR/..
 
 ENV="$DIR/../env/bin/activate"
 if [ ! -f $ENV ]; then

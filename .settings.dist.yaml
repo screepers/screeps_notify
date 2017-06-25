@@ -5,14 +5,65 @@ screeps_username:
 screeps_password:
 screeps_ptr: false
 
-# Your Account SID from www.twilio.com/console
-twilio_sid:
+services:
 
-# Your Auth Token from www.twilio.com/console
-twilio_token:
+  sms:
+    # Set driver to twilio
+    type: sms
 
-# You SMS number from twilio. https://www.twilio.com/console/phone-numbers/dashboard
-sms_from: '+15555555555'
+    # Your Account SID from www.twilio.com/console
+    twilio_sid:
 
-# This should be the number you want to receive the texts.
-sms_to: '+15555555555'
+    # Your Auth Token from www.twilio.com/console
+    twilio_token:
+
+    # You SMS number from twilio. https://www.twilio.com/console/phone-numbers/dashboard
+    sms_from: '+15555555555'
+
+    # This should be the number you want to receive the texts.
+    sms_to: '+15555555555'
+
+  alliance:
+    # Set driver to HTTP
+    type: http
+
+    # Specify a url
+    url:
+
+    # Provide an API key for AWS Gateway (optional)
+    api-key:
+
+  logs:
+    # Set driver to HTTP
+    type: http
+
+    # Specify a url
+    url:
+
+    # Provide a username for basic http authentication
+    http_user:
+
+    # Provide a password for basic http authentication
+    http_password:
+
+
+  slack:
+
+    # Set driver to slack
+    type: slack
+
+    # Get webhook from slack.
+    webhook_url: 'https://hooks.slack.com/services/T00000000/B00000000/XXXXXXXXXXXXXXXXXXXXXXXX'
+
+
+groups:
+
+  default:
+    - sms
+    - logs
+
+  economy:
+    - logs
+    - slack
+
+  defense: all
