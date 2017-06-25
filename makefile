@@ -62,3 +62,26 @@ cleancode:
 	if [ -d $(ROOT_DIR)/screep_notify ]; then \
 		rm -f $(ROOT_DIR)/screep_notify/*.pyc; \
 	fi;
+	# Remove lambda environment
+	if [ -d $(ROOT_DIR)/aws_lambda ]; then \
+		rm -rf $(ROOT_DIR)/aws_lambda; \
+	fi;
+	# Remove lambda zip
+	if [ -d $(ROOT_DIR)/aws_lambda.zip ]; then \
+		rm -f $(ROOT_DIR)/aws_lambda.zip; \
+	fi;
+	
+
+cleanlambda: 
+	rm -rf 
+
+lambda: dependencies
+	if [ ! -d $(ROOT_DIR)/aws_lambda ]; then \
+		mkdir $(ROOT_DIR)/aws_lambda ;\
+	fi;
+	cp -r $(ROOT_DIR)/env/src/screeps/screepsapi $(ROOT_DIR)/aws_lambda/
+	cp -r $(ROOT_DIR)/env/local/lib/python2.7/site-packages/* $(ROOT_DIR)/aws_lambda/
+	cp -r $(ROOT_DIR)/screeps_notify/* $(ROOT_DIR)/aws_lambda/
+	cp $(ROOT_DIR)/.settings.yaml $(ROOT_DIR)/aws_lambda/
+	cd $(ROOT_DIR)/aws_lambda; \
+	zip -r9 $(ROOT_DIR)/aws_lambda.zip * .settings.yaml;

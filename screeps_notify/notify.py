@@ -43,33 +43,34 @@ def clearNotifications(tick=0):
 class App():
 
     def run(self):
-        while True:
-            notifications = getNotifications()
-            if not notifications or len(notifications) <= 0:
-                print 'No notifications to send.'
-                sys.exit(0)
-            limit = 0
-            print 'Sending notifications.'
-            for notification in notifications:
-                if notification['tick'] > limit:
-                    limit = notification['tick']
+        notifications = getNotifications()
+        if not notifications or len(notifications) <= 0:
+            print 'No notifications to send.'
+            return
+        limit = 0
+        print 'Sending notifications.'
+        for notification in notifications:
+            if notification['tick'] > limit:
+                limit = notification['tick']
 
-                if 'groups' in notification:
-                    groups = notification['groups']
-                else:
-                    groups = ['default']
+            if 'groups' in notification:
+                groups = notification['groups']
+            else:
+                groups = ['default']
 
-                services = config.getServicesFromGroups(groups)
-                for service in services:
-                    try:
-                        driver = messenger.getMessengerDriver(service)
-                        driver.sendMessage(notification['message'])
-                    except:
-                        traceback.print_exc()
+            services = config.getServicesFromGroups(groups)
+            for service in services:
+                try:
+                    driver = messenger.getMessengerDriver(service)
+                    driver.sendMessage(notification['message'])
+                except:
+                    traceback.print_exc()
 
-            clearNotifications(limit)
-            time.sleep(5)
+        clearNotifications(limit)
 
+def lambda_handler(event,context):
+    app = App()
+    app.run()
 
 if __name__ == '__main__':
     app = App()
