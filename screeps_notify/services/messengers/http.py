@@ -11,20 +11,24 @@ class http:
     def sendMessage(self, notification):
         print('sending message from http')
 
-        notification['user'] = config.settings['screeps_username']
+        data = {
+            'user': config.settings['screeps_username'],
+            'message': notification
+        }
+
         headers = {'user-agent': 'screeps_notify'}
         if 'api-key' in self.settings:
             headers['x-api-key'] = self.settings['api-key']
 
         if 'http_user' in self.settings:
             r = requests.post(self.settings['url'],
-                              json=notification,
+                              json=data,
                               headers=headers,
                               auth=(self.settings['http_user'],
                                     self.settings['http_password']))
         else:
             r = requests.post(self.settings['url'],
-                              json=notification,
+                              json=data,
                               headers=headers)
 
         if r.status_code != requests.codes.ok:
