@@ -19,7 +19,10 @@ class slack:
         print('sending message from slack')
 
         user = config.settings['screeps_username']
-        message = '%s: %s' % (user, notification)
+        message = re.sub(r'([E|W][\d]+[N|S][\d]+)',
+                              addLinks,
+                              notification,
+                              flags=re.IGNORECASE)
         slack_data = {'text': message}
 
         if 'channel' in self.settings:
@@ -30,11 +33,6 @@ class slack:
 
         if 'icon_emoji' in self.settings:
             slack_data['icon_emoji'] = self.settings['icon_emoji']
-
-        notification = re.sub(r'([E|W][\d]+[N|S][\d]+)',
-                              addLinks,
-                              notification,
-                              flags=re.IGNORECASE)
 
         r = requests.post(self.settings['webhook_url'],
                           data=json.dumps(slack_data),
