@@ -24,49 +24,60 @@ def getScreepsConnection():
 getScreepsConnection.sconn = False
 
 
-def getNotifications():
+def getNotifications(shard):
     sconn = getScreepsConnection()
-    notifications = sconn.memory(path='__notify')
+    notifications = sconn.memory(path='__notify', shard=shard)
     if 'data' not in notifications:
         return False
     return notifications['data']
 
 
-def clearNotifications(tick=0):
+def clearNotifications(tick=0, shard='shard0'):
     print 'clearing sent messages'
     sconn = getScreepsConnection()
     javascript_clear = 'var limit=' + str(tick) + ';'
     javascript_clear += "if(typeof limit == 'undefined') var limit = 0; Memory.__notify = _.filter(Memory.__notify, function(notification){ return notification.tick > this.limit }.bind({'limit':limit}))"
-    sconn.console(javascript_clear)
+    sconn.console(javascript_clear, shard=shard)
 
 
 class App():
 
     def run(self):
-        notifications = getNotifications()
-        if not notifications or len(notifications) <= 0:
-            print 'No notifications to send.'
-            return
-        limit = 0
-        print 'Sending notifications.'
-        for notification in notifications:
-            if notification['tick'] > limit:
-                limit = notification['tick']
+        try:
+            api = getScreepsConnection()
+            shard_data = api.shard_info()['shards']
+            shards = [x['name'] for x in shard_data]
+            if len(shards) < 1:
+                shards = ['shard0']
+        except:
+            shards = ['shard0']
 
-            if 'groups' in notification:
-                groups = notification['groups']
-            else:
-                groups = ['default']
+        for shard in shards:
+            print('Checking for notifications on %s' % (shard,))
+            notifications = getNotifications(shard)
+            if not notifications or len(notifications) <= 0:
+                print 'No notifications to send.'
+                continue
+            limit = 0
+            print 'Sending notifications.'
+            for notification in notifications:
+                if notification['tick'] > limit:
+                    limit = notification['tick']
 
-            services = config.getServicesFromGroups(groups)
-            for service in services:
-                try:
-                    driver = messenger.getMessengerDriver(service)
-                    driver.sendMessage(notification['message'])
-                except:
-                    traceback.print_exc()
+                if 'groups' in notification:
+                    groups = notification['groups']
+                else:
+                    groups = ['default']
 
-        clearNotifications(limit)
+                services = config.getServicesFromGroups(groups)
+                for service in services:
+                    try:
+                        driver = messenger.getMessengerDriver(service)
+                        driver.sendMessage(notification['message'])
+                    except:
+                        traceback.print_exc()
+
+            clearNotifications(limit, shard)
 
 def lambda_handler(event,context):
     app = App()
