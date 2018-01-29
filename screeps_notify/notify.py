@@ -73,7 +73,7 @@ class App():
                 for service in services:
                     try:
                         driver = messenger.getMessengerDriver(service)
-                        driver.sendMessage(notification['message'])
+                        driver.sendMessage(notification['message'], shard)
                     except:
                         traceback.print_exc()
 

@@ -16,7 +16,7 @@ class sms:
                                           self.settings['twilio_token'])
         return self.smsclient
 
-    def sendMessage(self, notification):
+    def sendMessage(self, notification, shard):
         print('sending message from sms')
         message_text = 'Screeps: ' + notification
         message = self.getClient().messages.create(

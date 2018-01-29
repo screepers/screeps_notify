@@ -8,7 +8,7 @@ class http:
     def __init__(self, settings):
         self.settings = settings
 
-    def sendMessage(self, notification):
+    def sendMessage(self, notification, shard):
         print('sending message from http')
 
         data = {

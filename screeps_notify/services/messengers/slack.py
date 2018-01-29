@@ -5,9 +5,9 @@ import requests
 import re
 
 
-def addLinks(matchobj):
+def addLinks(matchobj, shard):
     roomname = matchobj.group(1).upper()
-    return '<https://screeps.com/a/#!/room/' + roomname + '|' + roomname + '>'
+    return "<https://screeps.com/a/#!/room/%s/%s|%s>" % (shard, roomname, roomname)
 
 
 class slack:
@@ -15,7 +15,7 @@ class slack:
     def __init__(self, settings):
         self.settings = settings
 
-    def sendMessage(self, notification):
+    def sendMessage(self, notification, shard):
         print('sending message from slack')
 
         user = config.settings['screeps_username']
