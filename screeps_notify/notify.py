@@ -16,10 +16,15 @@ import services.messenger as messenger
 def getScreepsConnection():
     if not getScreepsConnection.sconn:
         settings = config.getSettings()
-        getScreepsConnection.sconn = screepsapi.API(
-            u=settings['screeps_username'],
-            p=settings['screeps_password'],
-            ptr=settings['screeps_ptr'])
+        if 'screeps_token' in settings:
+            getScreepsConnection.sconn = screepsapi.API(
+                token=settings['screeps_token'],
+                ptr=settings['screeps_ptr'])
+        else:
+            getScreepsConnection.sconn = screepsapi.API(
+                u=settings['screeps_username'],
+                p=settings['screeps_password'],
+                ptr=settings['screeps_ptr'])
     return getScreepsConnection.sconn
 getScreepsConnection.sconn = False
 
