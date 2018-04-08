@@ -1,5 +1,11 @@
+const MAX_QUEUE_SIZE = 30
 
 var Notify = function (message, limit=false, groups=false) {
+
+  // Remove messages from older versions
+  if(Memory.__notify) {
+    delete Memory.__notify
+  }
 
   if(!groups) {
     groups = ['default']
@@ -35,16 +41,39 @@ var Notify = function (message, limit=false, groups=false) {
   return 0
 }
 
+let reset = Game.time
+let num = 0
+let shardid = ''
+if(Game.shard && Game.shard.name) {
+  const matches = Game.shard.name.match(/\d+$/);
+  if (matches) {
+    shardid = parseInt(matches[0]).toString(36);
+  }
+}
+
+Notify.getUUID = function () {
+  if (reset !== Game.time) {
+    reset = Game.time
+    num = 0
+  }
+  num++
+  return shardid + Game.time.toString(36) + num.toString(36).leftPad(3, '0')
+}
+
 
 Notify.queueMessage = function (message, groups) {
-  if(!Memory.__notify) {
-    Memory.__notify = []
+  if(!Memory.__notify_v2) {
+    Memory.__notify_v2 = {}
   }
-  Memory.__notify.push({
+  if (Memory.__notify_v2.length >= MAX_QUEUE_SIZE) {
+    return false
+  }
+  const id = Notify.getUUID()
+  Memory.__notify_v2[id] = {
     'message': message,
     'groups': groups,
     'tick': Game.time
-  })
+  }
 }
 
 // Clean up history instead of leaving old messages around
@@ -53,15 +82,24 @@ Notify.cleanHistory = function (limit) {
     limit = 20000
   }
 
-  if(!Memory.__notify_history) {
-    return
+  // Clear any already sent messages
+  if(Memory.__notify_v2) {
+    var ids = Object.keys(Memory.__notify_v2)
+    for(var id of ids) {
+      if(typeof Memory.__notify_v2[id] !== 'Object') {
+        delete Memory.__notify_v2[id]
+      }
+    }
   }
 
-  var messages = Object.keys(Memory.__notify_history)
-  for(var i in messages) {
-    var message = messages[i]
-    if(Memory.__notify_history[message] < Game.time - limit) {
-      delete Memory.__notify_history[message]
+  // Clear expired historical messages.
+  if(Memory.__notify_history) {
+    var messages = Object.keys(Memory.__notify_history)
+    for(var i in messages) {
+      var message = messages[i]
+      if(Memory.__notify_history[message] < Game.time - limit) {
+        delete Memory.__notify_history[message]
+      }
     }
   }
 }

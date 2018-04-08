@@ -31,18 +31,23 @@ getScreepsConnection.sconn = False
 
 def getNotifications(shard):
     sconn = getScreepsConnection()
-    notifications = sconn.memory(path='__notify', shard=shard)
+    notifications = sconn.memory(path='__notify_v2', shard=shard)
     if 'data' not in notifications:
         return False
-    return notifications['data']
+    notificationMap = notifications['data']
+    messages = []
+    for messageId, message in notificationMap.items():
+        if isinstance(message, dict):
+            message['messageId'] = messageId
+            message['shard'] = shard
+            messages.append(message)
+    return messages
 
 
-def clearNotifications(tick=0, shard='shard0'):
+def clearNotification(messageId, shard='shard0'):
     print 'clearing sent messages'
     sconn = getScreepsConnection()
-    javascript_clear = 'var limit=' + str(tick) + ';'
-    javascript_clear += "if(typeof limit == 'undefined') var limit = 0; Memory.__notify = _.filter(Memory.__notify, function(notification){ return notification.tick > this.limit }.bind({'limit':limit}))"
-    sconn.console(javascript_clear, shard=shard)
+    sconn.set_memory('__notify_v2.%s' % messageId, None, shard)
 
 
 class App():
@@ -63,17 +68,14 @@ class App():
             if not notifications or len(notifications) <= 0:
                 print 'No notifications to send.'
                 continue
-            limit = 0
+
             print 'Sending notifications.'
             for notification in notifications:
-                if notification['tick'] > limit:
-                    limit = notification['tick']
-
+                msgid = notification['messageId']
                 if 'groups' in notification:
                     groups = notification['groups']
                 else:
                     groups = ['default']
-
                 services = config.getServicesFromGroups(groups)
                 for service in services:
                     try:
@@ -81,8 +83,8 @@ class App():
                         driver.sendMessage(notification['message'], shard)
                     except:
                         traceback.print_exc()
+                clearNotification(msgid, shard)
 
-            clearNotifications(limit, shard)
 
 def lambda_handler(event,context):
     app = App()
