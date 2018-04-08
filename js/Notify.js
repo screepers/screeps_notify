@@ -36,8 +36,9 @@ var Notify = function (message, limit=false, groups=false) {
   }
 
   // Record message in history and send it.
-  Memory.__notify_history[history_message] = Game.time
-  Notify.queueMessage(message, groups)
+  if (Notify.queueMessage(message, groups)) {
+    Memory.__notify_history[history_message] = Game.time
+  }
   return 0
 }
 
@@ -57,7 +58,7 @@ Notify.getUUID = function () {
     num = 0
   }
   num++
-  return shardid + Game.time.toString(36) + num.toString(36).leftPad(3, '0')
+  return shardid + Game.time.toString(36) + num.toString(36)
 }
 
 
