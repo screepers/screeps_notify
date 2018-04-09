@@ -23,13 +23,21 @@ cp .settings.dist.yaml .settings.yaml
 
 ### Screeps Settings
 
-```yaml
+This project works with authorization tokens that have the `/api/user/memory`
+permission. If you are using the `ivm` module it will need "full permissions"
+(see below).
 
+```yaml
 # Screeps account info
-screeps_username:
-screeps_password:
+screeps_token:'6c4c2aac-6247-4dff-b4b8-fc456a720d62'
+screeps_ivm: true
 screeps_ptr: false
 ```
+
+If you are using the `ivm` engine the Screeps Notify Server will also run a
+console command to remove sent messages. This is important because many users
+on the `ivm` engine do not reparse memory each tick, so memory based API calls
+do not work.
 
 
 ### Define Services

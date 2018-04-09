@@ -48,6 +48,10 @@ def clearNotification(messageId, shard='shard0'):
     print 'clearing sent messages'
     sconn = getScreepsConnection()
     sconn.set_memory('__notify_v2.%s' % messageId, None, shard)
+    settings = config.getSettings()
+    if 'screeps_ivm' in settings and settings['screeps_ivm']:
+        message = "delete Memory.__notify_v2['%s']; 'ScreepsNotify: Clearing message %s'"
+        sconn.console(message % (messageId, messageId), shard=shard)
 
 
 class App():
